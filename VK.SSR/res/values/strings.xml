@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Seventh VK Status Rotator</string>
+    <string name="ui_load">Load</string>
+    <string name="ui_submit">Save</string>
+    <string name="ui_start">Launch rotation</string>
+    <string name="ui_stop">Sop rotation</string>
+    <string name="title_activity_login">Log in</string>
+    <string name="ui_close">Close</string>
+    <string name="message_unsaved">Submitted text doesn\'t equal to text in the field. Launch aborted</string>
+    <string name="message_nolines">Write more status messages to rotate. Launch aborted</string>
+    <string name="message_started">Rotation is on</string>
+    <string name="ui_error">Error</string>
+</resources>
