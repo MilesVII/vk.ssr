@@ -4,6 +4,7 @@ import java.net.URI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
@@ -13,8 +14,7 @@ public class Utils extends android.app.Application {
 	/*
 	 * This class contains some commonly-used methods
 	 */	
-	public static final String PREF_TOKEN = "token";
-	public static final String PREF_DATA = "data";
+	public static final String PREF_TOKEN = "token", PREF_DATA = "data", PREF_PERIOD = "period";
 	public static MainActivity ctxt;
 	public static void setContext(MainActivity _ctxt){
 		ctxt = _ctxt;
@@ -35,6 +35,12 @@ public class Utils extends android.app.Application {
 	public static void showInfoDialog(Activity _ctxt, String _title, String _text){
 		InfoDialogFragment _t = new InfoDialogFragment();
 		_t.setData(_title, _text);
+		_t.show(_ctxt.getFragmentManager(), "...");
+	}
+	
+	public static void requestConfirmation(Activity _ctxt, String _text, DialogInterface.OnClickListener _act){
+		ConfirmationDialogFragment _t = new ConfirmationDialogFragment();
+		_t.setData(_text, _act);
 		_t.show(_ctxt.getFragmentManager(), "...");
 	}
 	
@@ -60,7 +66,7 @@ public class Utils extends android.app.Application {
 		} catch(Exception _ex){
 			_ex.printStackTrace();
 		}
-		return "Internal error";
+		return ctxt.getString(R.string.ui_conerror);
 	}
 	
 	public static void shout(final String _text){
@@ -70,5 +76,9 @@ public class Utils extends android.app.Application {
 				Toast.makeText(ctxt, _text, Toast.LENGTH_LONG).show();
 			}
 		});
+	}
+	
+	public static String isOK(String _response){
+		return (_response.trim().equals("{\"response\":1}"))?"":_response;
 	}
 }

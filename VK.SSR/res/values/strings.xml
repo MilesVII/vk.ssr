@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Titles-->
     <string name="app_name">Seventh VK Status Rotator</string>
+    <string name="title_activity_login">Log in</string>
+    
+    <!--Error messages-->
+    <string name="ui_error">Error</string>
+    <string name="message_unsaved">Saved text or period length doesn\'t equal to text in the fields. Launch aborted</string>
+    <string name="message_nolines">Write more status messages to rotate. Launch aborted</string>
+    <string name="message_parse">Period is invalid. Launch aborted</string>
+    <string name="message_period">Minimal period is 120 seconds. Launch aborted</string>
+    <string name="message_started">Rotation is on</string>
+    
+    <!--Confirmation messages-->
+    <string name="conf_title">Confirmation</string>
+    <string name="conf_cancel">Cancel</string>
+    <string name="conf_proceed">Continue</string>
+    <string name="conf_close">After closing the application all unsaved changes will be discarded and rotation will stop. Continue?</string>
+    <string name="conf_logout">After logging out rotation will stop. Continue?</string>
+    
+    <!--Button captions-->
+    <string name="ui_reload">Reload</string>
     <string name="ui_load">Load</string>
     <string name="ui_submit">Save</string>
     <string name="ui_start">Launch rotation</string>
-    <string name="ui_stop">Sop rotation</string>
-    <string name="title_activity_login">Log in</string>
+    <string name="ui_stop">Stop rotation</string>
     <string name="ui_close">Close</string>
-    <string name="message_unsaved">Submitted text doesn\'t equal to text in the field. Launch aborted</string>
-    <string name="message_nolines">Write more status messages to rotate. Launch aborted</string>
-    <string name="message_started">Rotation is on</string>
-    <string name="ui_error">Error</string>
+    <string name="ui_logout">Log out</string>
+    
+    <!--Placeholders-->
+    <string name="ui_period">Period in seconds</string>
+    <string name="ui_mtr">Messages to rotate</string>
+    
+    <!--Notification text-->
+    <string name="ui_starting">Starting rotation...</string>
+    <string name="ui_conerror">Connection error</string>
+    <string name="ui_E">E:</string>
+    <string name="ui_OK">OK:</string>
 </resources>
