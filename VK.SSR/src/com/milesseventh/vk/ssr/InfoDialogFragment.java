@@ -3,7 +3,6 @@ package com.milesseventh.vk.ssr;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class InfoDialogFragment extends DialogFragment {

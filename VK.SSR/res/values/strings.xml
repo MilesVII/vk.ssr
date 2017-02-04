@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Titles-->
+
+    <!-- Titles -->
     <string name="app_name">Seventh VK Status Rotator</string>
     <string name="title_activity_login">Log in</string>
-    
-    <!--Error messages-->
+    <string name="title_activity_rotation_manager">Rotation Manager</string>
+    <string name="ui_rotation_editor">Rotation Editor</string>
+    <string name="ui_rotation_menu_title">Select rotation to run</string>
+
+    <!-- Error messages -->
     <string name="ui_error">Error</string>
-    <string name="message_unsaved">Saved text or period length doesn\'t equal to text in the fields. Launch aborted</string>
-    <string name="message_nolines">Write more status messages to rotate. Launch aborted</string>
-    <string name="message_parse">Period is invalid. Launch aborted</string>
-    <string name="message_period">Minimal period is 120 seconds. Launch aborted</string>
-    <string name="message_started">Rotation is on</string>
-    
-    <!--Confirmation messages-->
+    <string name="message_period">Minimal period is 120 seconds</string>
+
+    <!-- Confirmation messages -->
     <string name="conf_title">Confirmation</string>
     <string name="conf_cancel">Cancel</string>
     <string name="conf_proceed">Continue</string>
-    <string name="conf_close">After closing the application all unsaved changes will be discarded and rotation will stop. Continue?</string>
-    <string name="conf_logout">After logging out rotation will stop. Continue?</string>
-    
-    <!--Button captions-->
+    <string name="conf_close">After closing the application running rotations will stop. Continue?</string>
+    <string name="conf_stop">Your rotations will stop after this. Continue?</string>
+
+    <!-- Button captions -->
     <string name="ui_reload">Reload</string>
-    <string name="ui_load">Load</string>
-    <string name="ui_submit">Save</string>
-    <string name="ui_start">Launch rotation</string>
-    <string name="ui_stop">Stop rotation</string>
+    <string name="ui_save">Save</string>
+    <string name="ui_reload_groups">Reload groups list</string>
     <string name="ui_close">Close</string>
     <string name="ui_logout">Log out</string>
-    
-    <!--Placeholders-->
+    <string name="ui_add">+</string>
+    <string name="ui_edit">Edit rotation</string>
+    <string name="ui_delete">Delete rotation</string>
+    <string name="ui_off">off</string>
+    <string name="ui_user">User</string>
+    <string name="ui_manage">Manage rotations</string>
+
+    <!-- Placeholders -->
     <string name="ui_period">Period in seconds</string>
     <string name="ui_mtr">Messages to rotate</string>
-    
-    <!--Notification text-->
-    <string name="ui_starting">Starting rotation...</string>
+    <string name="ui_nor">Name of new rotation</string>
+
+    <!-- Notification text -->
+    <string name="ui_ison">On</string>
+    <string name="ui_E">E</string>
     <string name="ui_conerror">Connection error</string>
-    <string name="ui_E">E:</string>
-    <string name="ui_OK">OK:</string>
+    
+    <!-- Trash -->
+    <string name="trash.ui_load">Load</string>
+    <string name="trash.ui_start">Launch rotation</string>
+    <string name="trash.ui_stop">Stop rotation</string>
+    <string name="trash.message_started">Rotation is on</string>
+    <string name="trash.message_unsaved">Saved text or period length doesn\'t equal to text in the fields. Launch aborted</string>
+    <string name="trash.message_nolines">Write more status messages to rotate. Launch aborted</string>
+    <string name="trash.message_parse">Period is invalid. Launch aborted</string>
+    <string name="trash.ui_OK">OK:</string>
 </resources>

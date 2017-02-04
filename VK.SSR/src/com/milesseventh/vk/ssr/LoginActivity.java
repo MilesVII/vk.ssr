@@ -14,6 +14,7 @@ import android.widget.Button;
 
 public class LoginActivity extends Activity {
 	private WebView web;
+	private final int APP_ID = 5823245;
 	
 	public class CustomWebClient extends WebViewClient {
 		@Override
@@ -44,7 +45,7 @@ public class LoginActivity extends Activity {
 			}
 		});
 		//this.setProgress(progress);
-		web.loadUrl("https://oauth.vk.com/authorize?client_id=" + MainActivity.APP_ID + 
+		web.loadUrl("https://oauth.vk.com/authorize?client_id=" + APP_ID + 
 				"&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=status+offline&response_type=token&v=5.62");
 	}
 	

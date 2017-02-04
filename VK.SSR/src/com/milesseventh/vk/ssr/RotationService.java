@@ -1,7 +1,6 @@
 package com.milesseventh.vk.ssr;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,18 +9,16 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class RotationService extends Service {
 	public static final String ID = "RotationService";
-	int currentLine = 0;
-	String[] rotation;
-	String token;
-	Timer rotator;
-
+	private String token;
+	private Timer rotator;
+	private int runningRotations = 0;
+	
 	private NotificationManager NM;
 	private NotificationCompat.Builder smallHorsey;
 	private int whatIsYourNameHorsey;
@@ -42,48 +39,44 @@ public class RotationService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent _int, int _flags, int _startId){
-		Bundle _instructions = _int.getExtras();
 		token = Utils.getPrefs(this, Utils.PREF_TOKEN);
-		rotation = _instructions.getString(MainActivity.EXTRA_DATA).split("\n");
 		rotator = new Timer();
-		rotator.schedule(new TimerTask(){
-			@Override
-			public void run() {
-				while (rotation[currentLine].trim().isEmpty())
-					currentLine = cycledInc(currentLine, rotation.length);
-				String _resp = Utils.isOK(Utils.setStatus(rotation[currentLine], token));
-				
-				Date CURRENT_DATE = GregorianCalendar.getInstance().getTime();
-				String _stamp = "" + CURRENT_DATE.getHours() + ':' + CURRENT_DATE.getMinutes();
-				if (_resp.isEmpty()){
-					//All right
-					currentLine = cycledInc(currentLine, rotation.length);
-					shout(getString(R.string.ui_OK) + " " + currentLine + "/" + rotation.length + " (" +_stamp + ')');
-				} else {
-					shout(getString(R.string.ui_E) + " " + _resp + '(' +_stamp + ')');
-					Log.e("MS.VK.SSR.MAYDAY", _resp);
-				}
-			}
-		}, 0, 1000 * _instructions.getInt(MainActivity.EXTRA_PERIOD));
+		
 		NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		initShouting();
-		shout(getString(R.string.ui_starting));
+		shout(getString(R.string.ui_ison));
+		
+		startForeground(whatIsYourNameHorsey, smallHorsey.build());
 		return Service.START_REDELIVER_INTENT;
 	}
 	
-	public int cycledInc(int _in, int _max){
-		_in++;
-		if (_in >= _max)
-			_in = 0;
-		return _in;
+	public Timer addTask(final Task _t){
+		runningRotations++;
+		rotator.schedule(new TimerTask(){
+			@Override
+			public void run() {
+				String _resp = Utils.isOK(Utils.setStatus(token, _t.getCurrentLine(), _t.getTarget()));
+				Calendar CURRENT_DATE = Calendar.getInstance();
+				String _stamp = "" + CURRENT_DATE.get(Calendar.HOUR_OF_DAY) + ':' + CURRENT_DATE.get(Calendar.MINUTE);
+				if (_resp.isEmpty()){
+					//All right
+					_t.switchToNext();
+					shout(getString(R.string.ui_ison) + ": AR:" + runningRotations + " LSU:" +_stamp);
+				} else {
+					shout(getString(R.string.ui_E) + ": " + _resp);
+					Log.e("MS.VK.SSR.MAYDAY", _resp);
+				}
+			}
+		}, 0, 1000 * _t.getPeriod());
+		return rotator;
 	}
 	
 	public void shout(final String _voice){
 		NM.notify(whatIsYourNameHorsey, smallHorsey.setOngoing(true).setContentText(_voice).build());
 	}
 	
-	public void shutup(){
-		NM.cancelAll();
+	public void decreaseCounter(){
+		runningRotations--;
 	}
 	
 	@Override

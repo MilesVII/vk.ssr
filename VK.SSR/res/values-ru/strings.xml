@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Заголовки-->
+
+    <!-- Заголовки -->
     <string name="app_name">Seventh VK Status Rotator</string>
-    <string name="title_activity_login">Авторизация</string>
-    
-    <!--Сообщения-->
+    <string name="title_activity_login">Вход</string>
+    <string name="title_activity_rotation_manager">Управление Ротациями</string>
+    <string name="ui_rotation_editor">Редактор Ротаций</string>
+    <string name="ui_rotation_menu_title">Выберите ротацию для запуска</string>
+
+    <!-- Сообщения об ошибках -->
     <string name="ui_error">Ошибка</string>
-    <string name="message_unsaved">Введенные значения для текста или периода не сохранены. Запуск отменен.</string>
-    <string name="message_nolines">Введите больше сообщений для ротации. Запуск отменен.</string>
-    <string name="message_parse">Введенный период некорректен. Запуск отменен.</string>
-    <string name="message_period">Мнимальный период составляет 120 секунд. Запуск отменен.</string>
-    <string name="message_started">Ротация запущена</string>
-    
-    <!--Подтверждения-->
+    <string name="message_period">Минимальный период составляет 120 секунд</string>
+
+    <!-- Подтверждения -->
     <string name="conf_title">Подтверждение</string>
     <string name="conf_cancel">Отмена</string>
     <string name="conf_proceed">Продолжить</string>
-    <string name="conf_close">После закрытия приложения все несохраненные данные будут утеряны и ротация остановится. Продолжить?</string>
-    <string name="conf_logout">После смены аккаунта ротация остановится. Продолжить?</string>
-    
-    <!--Кнопки-->
+    <string name="conf_close">После закрытия приложения ротации будут остановлены. Продолжить?</string>
+    <string name="conf_stop">После этого действия ротации будут остановлены. Продолжить?</string>
+
+    <!-- Кнопки -->
     <string name="ui_reload">Обновить</string>
-    <string name="ui_load">Загрузить</string>
-    <string name="ui_submit">Сохранить</string>
-    <string name="ui_start">Запуск</string>
-    <string name="ui_stop">Стоп</string>
-    <string name="ui_close">Закрыть приложение</string>
-    <string name="ui_logout">Сменить аккаунт</string>
-    
-    <!--Placeholders-->
+    <string name="ui_save">Сохранить</string>
+    <string name="ui_reload_groups">Обновить список групп</string>
+    <string name="ui_close">Закрыть</string>
+    <string name="ui_logout">Выход</string>
+    <string name="ui_add">+</string>
+    <string name="ui_edit">Редактировать</string>
+    <string name="ui_delete">Удалить</string>
+    <string name="ui_off">[Выкл]</string>
+    <string name="ui_user">Пользователь</string>
+    <string name="ui_manage">Управление ротациями</string>
+
+    <!-- Placeholders -->
     <string name="ui_period">Период (в секундах)</string>
     <string name="ui_mtr">Статусы для ротации</string>
-    
-    <!--Уведомление-->
-    <string name="ui_starting">Запуск ротации...</string>
+    <string name="ui_nor">Название новой ротации</string>
+
+    <!-- Текст уведомления -->
+    <string name="ui_ison">On</string>
+    <string name="ui_E">E</string>
     <string name="ui_conerror">Ошибка соединения</string>
-    <string name="ui_E">E:</string>
-    <string name="ui_OK">OK:</string>
 </resources>
