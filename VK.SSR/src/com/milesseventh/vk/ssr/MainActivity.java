@@ -44,6 +44,8 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(DialogInterface arg0, int arg1) {
 			stopRotations();
+			rotator.shutup();
+			ctxt.stopService(new Intent(ctxt, RotationService.class));
 			finish();
 		}
 	};
@@ -79,6 +81,9 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem _i){
 		switch(_i.getItemId()){
+		case R.id.m_about:
+			Utils.showAboutDialog(this);
+			return true;
 		case R.id.m_reload:
 			Utils.requestConfirmation(this, getString(R.string.conf_stop), cl_reload);
 			return true;

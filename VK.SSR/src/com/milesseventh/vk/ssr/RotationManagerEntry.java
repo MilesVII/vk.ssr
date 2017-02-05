@@ -16,27 +16,5 @@ public class RotationManagerEntry extends Button {
 				_bigHorsey.show(_ctxt.getFragmentManager(), "...");
 			}
 		});
-		/*
-		//Entry caption
-		TextView _tx = new TextView(_ctxt);
-		_tx.setText(heart.name);
-		_tx.setTextSize(textSize);
-		
-		Button _be = new Button(_ctxt);
-		_be.setText(R.string.ui_edit);
-		_be.setOnClickListener(cl_edit);
-		_be.setBackgroundResource(R.drawable.button_custom);
-		_be.setMinimumWidth(MIN_EX_HEIGHT);
-		
-		Button _bx = new Button(_ctxt);
-		_bx.setText(R.string.ui_delete);
-		_bx.setOnClickListener(cl_delete);
-		_bx.setBackgroundResource(R.drawable.button_custom);
-		_bx.setMinimumWidth(MIN_EX_HEIGHT);*/
-
-		//addView(_be);
-		//addView(_bx);
-		//addView(_tx);
 	}
-
 }

@@ -16,7 +16,7 @@ import android.util.Log;
 public class RotationService extends Service {
 	public static final String ID = "RotationService";
 	private String token;
-	private Timer rotator;
+	//private Timer rotator;
 	private int runningRotations = 0;
 	
 	private NotificationManager NM;
@@ -40,7 +40,6 @@ public class RotationService extends Service {
 	@Override
 	public int onStartCommand(Intent _int, int _flags, int _startId){
 		token = Utils.getPrefs(this, Utils.PREF_TOKEN);
-		rotator = new Timer();
 		
 		NM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		initShouting();
@@ -52,23 +51,29 @@ public class RotationService extends Service {
 	
 	public Timer addTask(final Task _t){
 		runningRotations++;
-		rotator.schedule(new TimerTask(){
+		Timer _rotator = new Timer();
+		_rotator.schedule(new TimerTask(){
 			@Override
 			public void run() {
 				String _resp = Utils.isOK(Utils.setStatus(token, _t.getCurrentLine(), _t.getTarget()));
-				Calendar CURRENT_DATE = Calendar.getInstance();
-				String _stamp = "" + CURRENT_DATE.get(Calendar.HOUR_OF_DAY) + ':' + CURRENT_DATE.get(Calendar.MINUTE);
 				if (_resp.isEmpty()){
 					//All right
 					_t.switchToNext();
-					shout(getString(R.string.ui_ison) + ": AR:" + runningRotations + " LSU:" +_stamp);
+					shout(runningRotations);
 				} else {
 					shout(getString(R.string.ui_E) + ": " + _resp);
 					Log.e("MS.VK.SSR.MAYDAY", _resp);
 				}
 			}
 		}, 0, 1000 * _t.getPeriod());
-		return rotator;
+		return _rotator;
+	}
+	
+	private void shout(int _ar){
+		Calendar CURRENT_DATE = Calendar.getInstance();
+		String _stamp = "" + CURRENT_DATE.get(Calendar.HOUR_OF_DAY) + ':' + CURRENT_DATE.get(Calendar.MINUTE);
+		shout(getString(R.string.ui_ison) + ": AR:" + _ar + " LSU:" +_stamp);
+		
 	}
 	
 	public void shout(final String _voice){
@@ -77,6 +82,11 @@ public class RotationService extends Service {
 	
 	public void decreaseCounter(){
 		runningRotations--;
+		shout(runningRotations);
+	}
+	
+	public void shutup(){
+		NM.cancelAll();
 	}
 	
 	@Override

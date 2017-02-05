@@ -53,6 +53,13 @@ public class Utils extends android.app.Application {
 		_t.show(_ctxt.getFragmentManager(), "...");
 	}
 	
+	public static void showAboutDialog(Activity _ctxt){
+		InfoDialogFragment _t = new InfoDialogFragment();
+		_t.setData(_ctxt.getString(R.string.ui_about), _ctxt.getString(R.string.ui_about_data));
+		_t.linkifyOn();
+		_t.show(_ctxt.getFragmentManager(), "...");
+	}
+	
 	public static void requestConfirmation(Activity _ctxt, String _text, DialogInterface.OnClickListener _act){
 		ConfirmationDialogFragment _t = new ConfirmationDialogFragment();
 		_t.setData(_text, _act);

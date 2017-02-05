@@ -22,6 +22,7 @@
     <!-- Button captions -->
     <string name="ui_reload">Reload</string>
     <string name="ui_save">Save</string>
+    <string name="ui_about">About</string>
     <string name="ui_reload_groups">Reload groups list</string>
     <string name="ui_close">Close</string>
     <string name="ui_logout">Log out</string>
@@ -42,13 +43,10 @@
     <string name="ui_E">E</string>
     <string name="ui_conerror">Connection error</string>
     
-    <!-- Trash -->
-    <string name="trash.ui_load">Load</string>
-    <string name="trash.ui_start">Launch rotation</string>
-    <string name="trash.ui_stop">Stop rotation</string>
-    <string name="trash.message_started">Rotation is on</string>
-    <string name="trash.message_unsaved">Saved text or period length doesn\'t equal to text in the fields. Launch aborted</string>
-    <string name="trash.message_nolines">Write more status messages to rotate. Launch aborted</string>
-    <string name="trash.message_parse">Period is invalid. Launch aborted</string>
-    <string name="trash.ui_OK">OK:</string>
+    <string name="ui_about_data">Seventh VK Status Message Rotator - application developed for automatic sheduled status 
+message updating. Designed by Miles Seventh ( https://github.com/MilesVII/vk.ssr/releases ), 02.2017.\n
+\n
+Third-party components:\n
+Corn HTTP Client ( https://sites.google.com/site/javacornproject/corn-httpclient );\n
+Google GSON ( https://github.com/google/gson );</string>
 </resources>
