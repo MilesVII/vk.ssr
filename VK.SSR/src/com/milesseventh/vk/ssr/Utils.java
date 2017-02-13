@@ -1,6 +1,7 @@
 package com.milesseventh.vk.ssr;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,6 +13,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences.Editor;
@@ -25,7 +28,7 @@ public class Utils extends android.app.Application {
 	 */	
 	public static final String PREF_TOKEN = "token";//, PREF_DATA = "data", PREF_PERIOD = "period";
 	private static final String DATA_CONTAINER = "rotations.dat"; 
-	public static final int TARGET_USER = -1, MIN_PERIOD = 120, LOGIN_REQUEST_CODE = 777;
+	public static final int TARGET_USER = -1, MIN_PERIOD = 120, LOGIN_REQUEST_CODE = 17, IMPORT_REQUEST_CODE = 27;
 	public static ArrayList<RotationData> data;
 	public static ArrayList<VKGroup> groups = new ArrayList<VKGroup>();
 	public static MainActivity ctxt;
@@ -142,9 +145,29 @@ public class Utils extends android.app.Application {
 			_oos.close();
 			_fos.close();
 			return _r;
+		} catch (FileNotFoundException _fnfex){
+			return new ArrayList<RotationData>();
 		} catch (Exception _ex) {
 			_ex.printStackTrace();
 		}
 		return null;
 	}
+	
+	public static void copy(Context _ctxt, String _txt){
+		((ClipboardManager) _ctxt.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("SLM_data", _txt));
+	}
+	
+	/*public static boolean isServiceRunning(Context _ctxt){
+		ActivityManager am = (ActivityManager) _ctxt.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningServiceInfo> tasks = am.getRunningServices(Integer.MAX_VALUE);
+		String _cap = "", _line;
+		for (RunningServiceInfo _sickness : tasks){
+			_line = _sickness.service.toString();
+			_cap += _line + "\n";
+			if (_line.contains("com.milesseventh.vk.ssr.RotationService"))
+				return true;
+		}
+		copy(_ctxt, _cap);
+		return false;
+	}*/
 }

@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
 	public static final String 
 			EXTRA_TOKEN = "com.milesseventh.vk.ssr.token";
 	private String token;
-	public static Activity ctxt; 
+	public static MainActivity ctxt; 
 	//public TextView field, period_field;
 	private LinearLayout taskList;
 	private Button b_manage;//b_load, b_save, b_start;
@@ -66,12 +66,17 @@ public class MainActivity extends Activity {
 				startActivity(new Intent(ctxt, RotationManagerActivity.class));
 			}
 		});
-		
 		taskList = (LinearLayout) findViewById(R.id.task_list);
-		loadTargets();
+		
+		//Service must be started after token is loaded
 		startService(new Intent(this, RotationService.class));
 	}
 
+	public void onServiceStart(RotationService _rot){
+		rotator = _rot;
+		loadTargets();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -107,6 +112,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private void loadTargets(){
+		taskList.removeAllViews();
 		taskList.addView(new TaskEntry(this, Utils.TARGET_USER, getString(R.string.ui_user)));
 		Thread _loader = new Thread(new Runnable(){
 			@Override

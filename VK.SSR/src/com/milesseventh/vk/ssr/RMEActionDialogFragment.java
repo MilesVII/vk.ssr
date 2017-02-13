@@ -3,6 +3,7 @@ package com.milesseventh.vk.ssr;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,16 @@ public class RMEActionDialogFragment extends DialogFragment {
 			getDialog().dismiss();
 		}
 	};
+	private OnClickListener cl_import = new OnClickListener(){
+		@Override
+		public void onClick(View _host) {
+			Intent _i = new Intent(Intent.ACTION_GET_CONTENT);
+			_i.setType("file/*");
+			host.startActivityForResult(_i, Utils.IMPORT_REQUEST_CODE);
+			host.importing = heart;
+			getDialog().dismiss();
+		}
+	};
 	
 	public void setData(RotationData _heart, RotationManagerActivity _host){
 		heart = _heart;
@@ -58,6 +69,13 @@ public class RMEActionDialogFragment extends DialogFragment {
 		_delete.setText(R.string.ui_delete);
 		_delete.setOnClickListener(cl_delete);
 		_li.addView(_delete);
+		
+		Button _import = new Button(getActivity());
+		_import.setBackgroundResource(R.drawable.button_custom);
+		_import.setLayoutParams(lp);
+		_import.setText(R.string.ui_import);
+		_import.setOnClickListener(cl_import);
+		_li.addView(_import);
 		
 		_builder.setView(_li).setTitle(heart.name).setNeutralButton(getString(R.string.ui_close), null);
 

@@ -9,8 +9,4 @@ public class RotationData implements Serializable{
 	public int period = 0;
 	public String[] rotation = null;
 	public boolean isvalid = false;
-	public RotationData() {
-		// TODO Auto-generated constructor stub
-	}
-
 }

@@ -1,21 +1,17 @@
 package com.milesseventh.vk.ssr;
 
-import java.util.Timer;
-
-import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class TaskEntry extends ListEntry {
 	private int target;
-	private RotationData state = null;
-	private Timer mytask = null;
+	private Task mytask;
 	private Button picker;
-	private Context ctxt;
+	private MainActivity ctxt;
 	
-	public TaskEntry(final Activity _ctxt, int _target, String _name) {
+	@SuppressWarnings("static-access")
+	public TaskEntry(final MainActivity _ctxt, int _target, String _name) {
 		super(_ctxt);
 		target = _target;
 		ctxt = _ctxt;
@@ -24,6 +20,8 @@ public class TaskEntry extends ListEntry {
 		_tx.setText(_name);
 		_tx.setTextSize(textSize);
 
+		mytask = _ctxt.rotator.isItIn(_target);
+		
 		picker = new Button(_ctxt);
 		refreshCaption();
 		picker.setBackgroundResource(R.drawable.button_custom);
@@ -41,20 +39,21 @@ public class TaskEntry extends ListEntry {
 		addView(_tx);
 	}
 	
+	@SuppressWarnings("static-access")
 	public void setState(RotationData _new){
-		state = _new;
 		//Kill previous timer;
-		if (mytask != null){
-			mytask.cancel();
-			MainActivity.rotator.decreaseCounter();
-		}
+		if (mytask != null)
+			ctxt.rotator.removeTask(mytask);
+		
 		//And schedule a new one
-		if (state != null)
-			mytask = MainActivity.rotator.addTask(new Task(state, target));
+		if (_new != null)
+			mytask = ctxt.rotator.addTask(_new, target);
+		else
+			mytask = null;
 		refreshCaption();
 	}
 	
 	private void refreshCaption(){
-		picker.setText((state == null)?ctxt.getString(R.string.ui_off):state.name);
+		picker.setText((mytask == null)?ctxt.getString(R.string.ui_off):mytask.getName());
 	}
 }

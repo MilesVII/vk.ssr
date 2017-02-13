@@ -43,7 +43,6 @@ public class EditorDialogFragment extends DialogFragment {
 		_builder.setTitle(R.string.ui_rotation_editor).setView(_li).setNegativeButton(R.string.conf_cancel, null).setPositiveButton(R.string.ui_save, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
-				//Utils.data.remove(in);
 				boolean _horror = true;
 				//Name safety check
 				if (!_name.getText().toString().isEmpty())
@@ -74,7 +73,6 @@ public class EditorDialogFragment extends DialogFragment {
 					_horror = false;
 				
 				in.isvalid = _horror;
-				//Utils.data.add(in);
 				ctxt.syncList();
 			}
 		});
@@ -85,6 +83,6 @@ public class EditorDialogFragment extends DialogFragment {
 		String _pleasure = "";
 		for (String _undertail: _in)
 			_pleasure += _undertail + "\n";
-		return _pleasure.substring(0, _pleasure.length() - 2);
+		return _pleasure.substring(0, _pleasure.length() - 1);
 	}
 }
