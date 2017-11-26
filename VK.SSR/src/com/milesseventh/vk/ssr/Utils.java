@@ -13,6 +13,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -26,17 +28,13 @@ public class Utils extends android.app.Application {
 	/*
 	 * This class contains some commonly-used methods
 	 */	
-	public static final String PREF_TOKEN = "token";//, PREF_DATA = "data", PREF_PERIOD = "period";
+	public static final String PREF_TOKEN = "token";
 	private static final String DATA_CONTAINER = "rotations.dat"; 
 	public static final int TARGET_USER = -1, MIN_PERIOD = 120, LOGIN_REQUEST_CODE = 17, IMPORT_REQUEST_CODE = 27;
-	public static ArrayList<RotationData> data;
+	public static ArrayList<Rotation> data;
 	public static ArrayList<VKGroup> groups = new ArrayList<VKGroup>();
 	public static MainActivity ctxt;
 	private static JsonParser jp = new JsonParser();
-	
-	public static void setContext(MainActivity _ctxt){
-		ctxt = _ctxt;
-	}
 	
 	public static String getPrefs(Context _ctxt, String _key){
 		String _t = PreferenceManager.getDefaultSharedPreferences(_ctxt).getString(_key, "");
@@ -72,8 +70,8 @@ public class Utils extends android.app.Application {
 	public static String setStatus(String _token, String _text, int _target){
 		try{
 			HttpForm _form = new HttpForm(new URI("https://api.vk.com/method/status.set"));
-			_form.putFieldValue("text", _text);
 			_form.putFieldValue("access_token", _token);
+			_form.putFieldValue("text", _text);
 			if (_target != TARGET_USER)
 				_form.putFieldValue("group_id", "" + _target);
 			return _form.doGet().getData();
@@ -120,10 +118,10 @@ public class Utils extends android.app.Application {
 	public static void initDataContainer(){
 		data = loadDataFromFile();
 		if (data == null)
-			data = new ArrayList<RotationData>();
+			data = new ArrayList<Rotation>();
 	}
 	
-	public static void saveDataToFile(ArrayList<RotationData> _data){
+	public static void saveDataToFile(ArrayList<Rotation> _data){
 		try {
 			FileOutputStream _fos = ctxt.openFileOutput(DATA_CONTAINER, Context.MODE_PRIVATE);
 			ObjectOutputStream _oos = new ObjectOutputStream(_fos);
@@ -136,17 +134,17 @@ public class Utils extends android.app.Application {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static ArrayList<RotationData> loadDataFromFile(){
-		ArrayList<RotationData> _r;
+	public static ArrayList<Rotation> loadDataFromFile(){
+		ArrayList<Rotation> _r;
 		try{
 			FileInputStream _fos = ctxt.openFileInput(DATA_CONTAINER);
 			ObjectInputStream _oos = new ObjectInputStream(_fos);
-			_r = (ArrayList<RotationData>)_oos.readObject();
+			_r = (ArrayList<Rotation>)_oos.readObject();
 			_oos.close();
 			_fos.close();
 			return _r;
 		} catch (FileNotFoundException _fnfex){
-			return new ArrayList<RotationData>();
+			return new ArrayList<Rotation>();
 		} catch (Exception _ex) {
 			_ex.printStackTrace();
 		}
@@ -154,20 +152,15 @@ public class Utils extends android.app.Application {
 	}
 	
 	public static void copy(Context _ctxt, String _txt){
-		((ClipboardManager) _ctxt.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("SLM_data", _txt));
+		((ClipboardManager) _ctxt.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("SSR_data", _txt));
 	}
 	
-	/*public static boolean isServiceRunning(Context _ctxt){
+	public static boolean isServiceRunning(Context _ctxt){
 		ActivityManager am = (ActivityManager) _ctxt.getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningServiceInfo> tasks = am.getRunningServices(Integer.MAX_VALUE);
-		String _cap = "", _line;
-		for (RunningServiceInfo _sickness : tasks){
-			_line = _sickness.service.toString();
-			_cap += _line + "\n";
-			if (_line.contains("com.milesseventh.vk.ssr.RotationService"))
+		for (RunningServiceInfo _sickness : am.getRunningServices(Integer.MAX_VALUE)){
+			if (_sickness.service.toString().contains("com.milesseventh.vk.ssr.RotationService"))
 				return true;
 		}
-		copy(_ctxt, _cap);
 		return false;
-	}*/
+	}
 }

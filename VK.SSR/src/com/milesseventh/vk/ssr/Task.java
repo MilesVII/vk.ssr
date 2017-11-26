@@ -1,44 +1,19 @@
 package com.milesseventh.vk.ssr;
 
-import java.util.Timer;
+import java.io.Serializable;
 
-public class Task {
-	private int horseystail = 0, target;
-	private RotationData rd;
-	private Timer myTimer = null;
-	
-	public Task(RotationData _rd, int _target){
-		rd = _rd;
+public class Task implements Serializable{
+	private static final long serialVersionUID = 7566142107405940792L;
+	public int currentLine = 0, target;
+	public Rotation rotation;
+
+	public Task(Rotation _rd, int _target){
+		rotation = _rd;
 		target = _target;
 	}
 	
-	public String getCurrentLine(){
-		return rd.rotation[horseystail];
-	}
-	
 	public void switchToNext(){
-		horseystail++;
-		if (horseystail >= rd.rotation.length)
-			horseystail = 0;
-	}
-	
-	public int getTarget(){
-		return target;
-	}
-	
-	public String getName(){
-		return rd.name;
-	}
-	
-	public int getPeriod(){
-		return rd.period;
-	}
-	
-	public void linkTimer (Timer _in){
-		myTimer = _in;
-	}
-	
-	public Timer getTimer(){
-		return myTimer;
+		currentLine++;
+		currentLine %= rotation.text.length;
 	}
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.CookieManager;
@@ -50,9 +51,14 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void complete(String _token){
+		Log.d("LoginA", "Got token: " + _token);
 		Intent _bukake = new Intent();
 		_bukake.putExtra(MainActivity.EXTRA_TOKEN, _token);
 		setResult(RESULT_OK, _bukake);
 		finish();
+	}
+	
+	@Override
+	public void onBackPressed(){
 	}
 }

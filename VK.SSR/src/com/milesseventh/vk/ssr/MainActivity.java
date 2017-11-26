@@ -1,9 +1,19 @@
 package com.milesseventh.vk.ssr;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,53 +22,38 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class MainActivity extends Activity {
-	public static final String 
-			EXTRA_TOKEN = "com.milesseventh.vk.ssr.token";
+	public String D = "DebugPoint:Main";
+	public static final String EXTRA_TOKEN = "com.milesseventh.vk.ssr.token";
 	private String token;
 	public static MainActivity ctxt; 
-	//public TextView field, period_field;
 	private LinearLayout taskList;
-	private Button b_manage;//b_load, b_save, b_start;
-	public static RotationService rotator = null;
-	//private Intent rotInt; 
-	private DialogInterface.OnClickListener cl_reload = new DialogInterface.OnClickListener(){
-		@Override
-		public void onClick(DialogInterface arg0, int arg1) {
-			//Shutdown every rotation
-			stopRotations();
-			//Clear list
-			taskList.removeAllViews();
-			//And reload
-			loadTargets();
-		}
-	};
+	private Button b_manage;
+	public boolean connected = false;
+	public Intent serviceIntent;
 	private DialogInterface.OnClickListener cl_logout = new DialogInterface.OnClickListener(){
 		@Override
 		public void onClick(DialogInterface arg0, int arg1) {
-			stopRotations();
 			Utils.setPrefs(ctxt, Utils.PREF_TOKEN, "");
-			reloadToken();
+			finish();
 		}
 	};
 	private DialogInterface.OnClickListener cl_close = new DialogInterface.OnClickListener(){
 		@Override
 		public void onClick(DialogInterface arg0, int arg1) {
-			stopRotations();
-			rotator.shutup();
-			ctxt.stopService(new Intent(ctxt, RotationService.class));
+			msgDie();
 			finish();
 		}
 	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		ctxt = this;
-		Utils.setContext(this);
-		Utils.initDataContainer();
 		super.onCreate(savedInstanceState);
+		Utils.ctxt = ctxt = this;
+		serviceIntent = new Intent(this, RotationService.class);
+		Utils.initDataContainer();
+		token = Utils.getPrefs(this, Utils.PREF_TOKEN);
+		
 		setContentView(R.layout.activity_main);
-		reloadToken();
-
 		b_manage = (Button)findViewById(R.id.b_manage);
 		b_manage.setOnClickListener(new OnClickListener(){
 			@Override
@@ -68,13 +63,40 @@ public class MainActivity extends Activity {
 		});
 		taskList = (LinearLayout) findViewById(R.id.task_list);
 		
-		//Service must be started after token is loaded
-		startService(new Intent(this, RotationService.class));
-	}
-
-	public void onServiceStart(RotationService _rot){
-		rotator = _rot;
+			Log.d(D, "started, connected: " + connected);
+		if (!Utils.isServiceRunning(this)){
+			startService(serviceIntent);
+		}
 		loadTargets();
+		//if (!connected)
+	}
+	
+	@Override
+	public void onResume(){
+		Log.d(D, "onResume()");
+		if (connected)
+			msgCheckUp();
+		else
+			bindService(serviceIntent, sc, Service.BIND_ABOVE_CLIENT);
+		super.onResume();
+	}
+	
+	@Override
+	public void onStop(){
+		Log.d(D, "onStop()");
+		if (connected){
+			unbindService(sc);
+			connected = false;
+		}
+		super.onStop();
+	}
+	
+	@Override
+	public void onDestroy(){
+		Log.d(D, "onDestroy()");
+		if (getParent() != null)
+			getParent().finish();
+		super.onDestroy();
 	}
 	
 	@Override
@@ -89,9 +111,6 @@ public class MainActivity extends Activity {
 		case R.id.m_about:
 			Utils.showAboutDialog(this);
 			return true;
-		case R.id.m_reload:
-			Utils.requestConfirmation(this, getString(R.string.conf_stop), cl_reload);
-			return true;
 		case R.id.m_logout:
 			Utils.requestConfirmation(this, getString(R.string.conf_stop), cl_logout);
 			return true;
@@ -102,43 +121,116 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(_i);
 	}
 	
-	@Override
-	public void onActivityResult(int _reqId, int _resCode, Intent _data){
-		if(_resCode != RESULT_CANCELED)
-			if (_reqId == Utils.LOGIN_REQUEST_CODE){
-				Utils.setPrefs(this, Utils.PREF_TOKEN, _data.getExtras().getString(EXTRA_TOKEN));
-				reloadToken();
-			}
-	}
-	
+	public Object targetloadingMonitor = new Object();
+	public Runnable groupLoader = new Runnable(){
+		@Override
+		public void run() {
+			for (VKGroup _lickingcroups: Utils.groups)
+				taskList.addView(new TaskEntry(ctxt, _lickingcroups.gid, _lickingcroups.name));
+		}
+	};
 	private void loadTargets(){
 		taskList.removeAllViews();
 		taskList.addView(new TaskEntry(this, Utils.TARGET_USER, getString(R.string.ui_user)));
 		Thread _loader = new Thread(new Runnable(){
 			@Override
 			public void run() {
-				if (Utils.getGroupsList(token).isEmpty()){
-					runOnUiThread(new Runnable(){
-						@Override
-						public void run() {
-							for (VKGroup _lickingcroups: Utils.groups)
-								taskList.addView(new TaskEntry(ctxt, _lickingcroups.gid, _lickingcroups.name));
-						}
-					});
+				if (Utils.getGroupsList(token).isEmpty())//Means groups list loaded without errors
+					runOnUiThread(groupLoader);
+				synchronized(targetloadingMonitor){
+					MainActivity.ctxt.targetloadingMonitor.notify();
 				}
 			}
 		});
 		_loader.start();
+		synchronized(targetloadingMonitor){
+			try {
+				targetloadingMonitor.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if (connected)
+			msgCheckUp();
 	}
 	
-	private void reloadToken(){
-		token = Utils.getPrefs(this, Utils.PREF_TOKEN);
-		if (token == "")
-			startActivityForResult(new Intent(this, LoginActivity.class), Utils.LOGIN_REQUEST_CODE);
-	}
+	///////////////////////////////////////////////////////////
+	//IPC SECTOR
+	public Messenger sendMan;
+	public ServiceConnection sc = new ServiceConnection(){
+			@Override
+			public void onServiceConnected(ComponentName arg0, IBinder binder) {
+				connected = true;
+				sendMan = new Messenger(binder);
+				msgCheckUp();
+			}
+			
+			@Override
+			public void onServiceDisconnected(ComponentName arg0) {
+				connected = false;
+				sendMan = null;
+			}
+		};
 	
-	private void stopRotations(){
-		for (int _fur = 0; _fur < taskList.getChildCount(); _fur++)
-			((TaskEntry)taskList.getChildAt(_fur)).setState(null);
+	Messenger receiver = new Messenger(new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			switch(msg.what){
+			case(RotationService.MSG_CHECK_UP):
+				@SuppressWarnings("unchecked") ArrayList<Task> tasksInCloud = (ArrayList<Task>) msg.getData().getSerializable(RotationService.KEY_TASKS);
+				if (!tasksInCloud.isEmpty()){
+					for (int i = 0; i < taskList.getChildCount(); i++){
+						TaskEntry te = ((TaskEntry)taskList.getChildAt(i));
+						for (Task trapped: tasksInCloud)
+							if (trapped.target == te.target){
+								te.rotationTitle = trapped.rotation.name;
+								te.refreshCaption();
+							}
+						//ohfuck
+					}
+				}
+			}
+		}
+	});
+	private boolean sand(Message m){
+		try {
+			if (connected)
+				sendMan.send(m);
+			else 
+				return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public boolean msgAddTask(Rotation r, int target){
+		Message m = Message.obtain(null, RotationService.MSG_ADD_TASK, target, 0);
+		Bundle box = new Bundle();
+		box.putSerializable(RotationService.KEY_ROTATION, r);
+		m.setData(box);
+		return sand(m);
+	}
+	public boolean msgRemoveTask(int t){
+		Message m = Message.obtain();
+		m.arg1 = t;
+		m.what = RotationService.MSG_REMOVE_TASK;
+		return sand(m);
+	}
+	public void msgCheckUp(){
+		Message m = Message.obtain(null, RotationService.MSG_CHECK_UP);
+		Bundle box = new Bundle();
+		box.putString(RotationService.KEY_TOKEN, token);
+		m.setData(box);
+		m.replyTo = receiver;
+		sand(m);
+	}
+	public void msgKillTheLights(){
+		Message m = Message.obtain(null, RotationService.MSG_KILL_THE_LIGHTS);
+		sand(m);
+	}
+	public void msgDie(){
+		Message m = Message.obtain(null, RotationService.MSG_DIE);
+		sand(m);
 	}
 }

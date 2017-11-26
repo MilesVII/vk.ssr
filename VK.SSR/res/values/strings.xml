@@ -43,11 +43,13 @@
     <string name="ui_ison">On</string>
     <string name="ui_E">E</string>
     <string name="ui_conerror">Connection error</string>
-    
     <string name="ui_about_data">Seventh VK Status Message Rotator - application developed for automatic sheduled status 
 message updating. Designed by Miles Seventh ( https://github.com/MilesVII/vk.ssr/releases ), 02.2017.\n
 \n
 Third-party components:\n
 Corn HTTP Client ( https://sites.google.com/site/javacornproject/corn-httpclient );\n
 Google GSON ( https://github.com/google/gson );</string>
+    <string name="title_activity_reception">...</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

@@ -27,7 +27,7 @@ public class RDPickerDialogFragment extends DialogFragment {
 		_li.setOrientation(LinearLayout.VERTICAL);
 
 		_li.addView(generateEntry(null));
-		for (RotationData _runhorseyrun: Utils.data)
+		for (Rotation _runhorseyrun: Utils.data)
 			if (_runhorseyrun.isvalid)
 				_li.addView(generateEntry(_runhorseyrun));
 		
@@ -36,7 +36,7 @@ public class RDPickerDialogFragment extends DialogFragment {
 		return _builder.create();
 	}
 	
-	private Button generateEntry(final RotationData _in){
+	private Button generateEntry(final Rotation _in){
 		Button _b = new Button(getActivity());
 		_b.setBackgroundResource(R.drawable.button_custom);
 		_b.setLayoutParams(lp);
@@ -44,7 +44,7 @@ public class RDPickerDialogFragment extends DialogFragment {
 		_b.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View no){
-				host.setState(_in);
+				host.setRotation(_in);
 				getDialog().dismiss();
 			}
 		});
